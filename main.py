@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import Response
 import requests
 from geopy.geocoders import Nominatim
 from typing import Dict
@@ -114,6 +115,11 @@ async def get_weather(city_name: str) -> Dict[str, str]:
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "weather-service"}
+
+@app.get("/favicon.ico")
+async def favicon():
+    """Return empty favicon to prevent 404 errors"""
+    return Response(content="", media_type="image/x-icon")
 
 if __name__ == "__main__":
     import uvicorn
