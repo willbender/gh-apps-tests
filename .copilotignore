@@ -1,0 +1,43 @@
+# Environment and configuration files
+*.env
+.env.*
+config.ini
+secrets/
+.secrets/
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+
+# IDE and editor files
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache directories
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Personal notes and TODO files
+notes.md
+TODO.txt
+NOTES.txt
+
+# Test data that shouldn't influence suggestions
+test_data/private/
+mock_responses/

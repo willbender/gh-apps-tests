@@ -120,4 +120,50 @@ curl http://localhost:8000/weather/London
 Invoke-RestMethod -Uri "http://localhost:8000/weather/London"
 ```
 
-Repository to contain some tests about gh apps
+## Architecture
+
+The Weather Service API follows a layered architecture with clear separation of concerns:
+
+```mermaid
+graph TD
+  A[Client Request] --> B[FastAPI Router]
+  B --> C[Weather Service Layer]
+  C --> D[Geocoding Service]
+  C --> E[Weather API Client]
+  
+  D --> F[Nominatim API<br/>OpenStreetMap]
+  E --> G[Open-Meteo API]
+  
+  F --> H[Coordinates Response]
+  G --> I[Weather Data Response]
+  
+  H --> C
+  I --> C
+  C --> J[Response Formatter]
+  J --> K[JSON Response]
+  K --> B
+  B --> L[Client Response]
+  
+  style A fill:#e1f5fe
+  style L fill:#e8f5e8
+  style F fill:#fff3e0
+  style G fill:#fff3e0
+  style C fill:#f3e5f5
+```
+
+### Component Overview
+
+- **FastAPI Router**: Handles HTTP requests and routes them to appropriate handlers
+- **Weather Service Layer**: Core business logic that orchestrates the weather lookup process  
+- **Geocoding Service**: Converts city names to latitude/longitude coordinates using Nominatim
+- **Weather API Client**: Fetches current weather data from Open-Meteo API
+- **Response Formatter**: Formats the weather data into user-friendly JSON responses
+
+### Data Flow
+
+1. Client sends GET request to `/weather/{city_name}`
+2. FastAPI routes the request to the weather service
+3. Service calls geocoding to get coordinates for the city
+4. Service uses coordinates to fetch weather data from Open-Meteo
+5. Service formats the response and returns it to the client
+6. Error handling occurs at each step with appropriate HTTP status codes
