@@ -19,6 +19,32 @@ A Python webservice that provides weather information for cities using the Open-
 
 ## Installation
 
+### Option 1: Docker (Recommended)
+
+The easiest way to run the Weather Service is using Docker with nginx as a reverse proxy:
+
+```bash
+# Build the Docker image
+docker build -t weather-service:latest .
+
+# Run the container
+docker run -p 80:80 weather-service:latest
+```
+
+Or use docker-compose for easier management:
+
+```bash
+# Start the service
+docker-compose up -d
+
+# Stop the service
+docker-compose down
+```
+
+The service will be available at `http://localhost` (port 80).
+
+### Option 2: Local Development
+
 1. Make sure you have Python 3.7+ installed
 2. Install dependencies:
 
@@ -29,6 +55,22 @@ A Python webservice that provides weather information for cities using the Open-
 ## Usage
 
 ### Start the Server
+
+#### Docker Deployment
+
+After building the Docker image:
+
+```bash
+# Using Docker directly
+docker run -p 80:80 weather-service:latest
+
+# Using docker-compose
+docker-compose up -d
+```
+
+The server will start on `http://localhost` (port 80).
+
+#### Local Development
 
 Option 1 - Development mode (with auto-reload):
 
@@ -45,6 +87,16 @@ python start_server.py
 The server will start on `http://localhost:8000`
 
 ### API Examples
+
+#### Docker Deployment (port 80)
+
+- Get weather for London: `http://localhost/weather/London`
+- Get weather for New York: `http://localhost/weather/New York`
+- Get weather for Tokyo: `http://localhost/weather/Tokyo`
+- Health check: `http://localhost/health`
+- API documentation: `http://localhost/docs`
+
+#### Local Development (port 8000)
 
 - Get weather for London: `http://localhost:8000/weather/London`
 - Get weather for New York: `http://localhost:8000/weather/New York`
@@ -111,6 +163,18 @@ Once the server is running, visit `http://localhost:8000/docs` for interactive A
 5. **Error Handling**: If the city is not found or the weather data is unavailable, an appropriate error message is returned
 
 ## Example Usage from Command Line
+
+### Docker (port 80)
+
+```bash
+# Using curl
+curl http://localhost/weather/London
+
+# Using PowerShell
+Invoke-RestMethod -Uri "http://localhost/weather/London"
+```
+
+### Local Python (port 8000)
 
 ```bash
 # Using curl
