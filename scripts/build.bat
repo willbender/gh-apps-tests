@@ -2,7 +2,8 @@
 REM Build and run the Weather Service Docker container
 
 echo Building Weather Service Docker image...
-docker build -t weather-service:latest .
+cd /d "%~dp0\.."
+docker build -f docker/Dockerfile -t weather-service:latest .
 
 if %ERRORLEVEL% neq 0 (
     echo Build failed!
@@ -15,7 +16,7 @@ echo To run the container:
 echo   docker run -p 80:80 weather-service:latest
 echo.
 echo Or use docker-compose:
-echo   docker-compose up -d
+echo   cd docker ^&^& docker-compose up -d
 echo.
 echo The service will be available at:
 echo   - API: http://localhost/

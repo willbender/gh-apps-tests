@@ -18,8 +18,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY main.py .
-COPY run_server.py .
+COPY src/main.py .
+COPY src/run_server.py .
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
@@ -38,7 +38,7 @@ FROM nginx:alpine AS nginx-proxy
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/
+COPY docker/nginx.conf /etc/nginx/conf.d/
 
 # Expose port 80
 EXPOSE 80
@@ -61,14 +61,14 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY main.py .
-COPY run_server.py .
+COPY src/main.py .
+COPY src/run_server.py .
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/sites-available/default
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 # Copy supervisor configuration  
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Create non-root user for the app and set up nginx configuration
 RUN useradd --create-home --shell /bin/bash app && \

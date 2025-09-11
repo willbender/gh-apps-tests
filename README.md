@@ -24,8 +24,12 @@ A Python webservice that provides weather information for cities using the Open-
 The easiest way to run the Weather Service is using Docker with nginx as a reverse proxy:
 
 ```bash
-# Build the Docker image
-docker build -t weather-service:latest .
+# Build the Docker image using the build scripts
+./scripts/build.sh        # Linux/macOS
+scripts\build.bat         # Windows
+
+# Or build manually
+docker build -f docker/Dockerfile -t weather-service:latest .
 
 # Run the container
 docker run -p 80:80 weather-service:latest
@@ -35,10 +39,10 @@ Or use docker-compose for easier management:
 
 ```bash
 # Start the service
-docker-compose up -d
+cd docker && docker-compose up -d
 
 # Stop the service
-docker-compose down
+cd docker && docker-compose down
 ```
 
 The service will be available at `http://localhost` (port 80).
@@ -72,16 +76,33 @@ The server will start on `http://localhost` (port 80).
 
 #### Local Development
 
-Option 1 - Development mode (with auto-reload):
+Option 1 - Using the startup scripts (recommended):
 
 ```bash
-python run_server.py
+# Linux/macOS
+./scripts/start.sh
+
+# Windows
+scripts\start.bat
 ```
 
-Option 2 - Simple mode:
+Option 2 - Using Python directly:
 
 ```bash
-python start_server.py
+# From project root
+python -m uvicorn src.main:app --host 0.0.0.0 --port 8000
+```
+
+Option 3 - Development mode (with auto-reload):
+
+```bash
+python src/run_server.py
+```
+
+Option 4 - Simple mode:
+
+```bash
+python src/start_server.py
 ```
 
 The server will start on `http://localhost:8000`
@@ -123,24 +144,35 @@ The server will start on `http://localhost:8000`
 
 ### Testing
 
-Option 1 - Direct functionality test (no server needed):
+Option 1 - Using pytest (recommended):
 
 ```bash
-python test_direct.py
+# Run all tests
+pytest tests/
+
+# Run specific test files
+pytest tests/test_direct.py
+pytest tests/test_service.py
 ```
 
-Option 2 - Full API test (requires server to be running):
+Option 2 - Direct functionality test (no server needed):
 
 ```bash
-python test_service.py
+python tests/test_direct.py
 ```
 
-Option 3 - Simple client usage:
+Option 3 - Full API test (requires server to be running):
 
 ```bash
-python client.py London
-python client.py "New York"
-python client.py Tokyo
+python tests/test_service.py
+```
+
+Option 4 - Simple client usage:
+
+```bash
+python src/client.py London
+python src/client.py "New York"
+python src/client.py Tokyo
 ```
 
 ## Dependencies

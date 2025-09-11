@@ -2,7 +2,7 @@
 """
 Direct test of the weather service functionality
 """
-from main import WeatherService
+from src.main import WeatherService
 
 def test_weather_functionality():
     """Test the weather service functionality directly"""
