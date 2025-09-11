@@ -118,7 +118,7 @@ jobs:
         sarif_file: 'trivy-results.sarif'
         
     - name: Upload Trivy vulnerability report as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: trivy-vulnerability-report
@@ -128,7 +128,7 @@ jobs:
         retention-days: 30
         
     - name: Upload Docker image artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: docker-image
         path: /tmp/image.tar
@@ -146,7 +146,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Download Docker image artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: docker-image
         path: /tmp
@@ -227,12 +227,10 @@ jobs:
         tags: true
         
     - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ steps.version.outputs.new_version }}
-        release_name: Release v${{ steps.version.outputs.new_version }}
+        name: Release v${{ steps.version.outputs.new_version }}
         body: |
           ## Changes in this Release
           - Automated release with version bump from ${{ steps.version.outputs.current_version }} to ${{ steps.version.outputs.new_version }}
@@ -247,3 +245,4 @@ jobs:
           ```
         draft: false
         prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
