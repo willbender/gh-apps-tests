@@ -263,3 +263,64 @@ graph TD
 4. Service uses coordinates to fetch weather data from Open-Meteo
 5. Service formats the response and returns it to the client
 6. Error handling occurs at each step with appropriate HTTP status codes
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and deployment with the following features:
+
+### Pipeline Stages
+
+1. **Test Stage**
+   - Runs comprehensive unit and integration tests using pytest
+   - Enforces minimum 75% code coverage requirement
+   - Fails the build if coverage threshold is not met
+   - Uploads coverage reports to Codecov
+
+2. **Build and Security Scan Stage**
+   - Builds Docker image using the project's Dockerfile
+   - Performs security vulnerability scanning using Trivy
+   - Generates both SARIF and JSON vulnerability reports
+   - Uploads security scan results to GitHub Security tab
+   - Stores vulnerability reports as workflow artifacts
+
+3. **Deploy Stage** (main branch only)
+   - Automatically increments the minor version in `pyproject.toml`
+   - Tags and pushes the Docker image to GitHub Container Registry (ghcr.io)
+   - Creates a new Git tag with the updated version
+   - Generates a GitHub release with changelog and Docker pull commands
+   - Pushes version changes back to the repository
+
+### Docker Image Registry
+
+Docker images are automatically published to GitHub Container Registry:
+
+```bash
+# Pull the latest version
+docker pull ghcr.io/willbender/simple-weather-app:latest
+
+# Pull a specific version
+docker pull ghcr.io/willbender/simple-weather-app:1.1.0
+```
+
+### Security Scanning
+
+Every build includes comprehensive security scanning:
+
+- **Container Image Scanning**: Trivy scans the Docker image for known vulnerabilities
+- **Dependency Scanning**: Python dependencies are analyzed for security issues
+- **SARIF Integration**: Results are uploaded to GitHub's Security tab for easy monitoring
+
+### Version Management
+
+- **Automatic Versioning**: Minor version increments on every main branch deployment
+- **Semantic Versioning**: Follows semver format (MAJOR.MINOR.PATCH)
+- **Git Tagging**: Each release is tagged in Git for traceability
+- **Release Notes**: Automated GitHub releases with Docker pull instructions
+
+### Workflow Triggers
+
+- **Push to main**: Full pipeline including deployment
+- **Push to develop**: Test and build stages only
+- **Pull Requests**: Test and build stages for validation
+
+The CI/CD pipeline ensures code quality, security, and reliable deployments while maintaining full traceability of all releases.
