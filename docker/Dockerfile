@@ -1,7 +1,7 @@
 # Multi-stage build for Weather Service with nginx
 
 # Stage 1: Build the Python application
-FROM python:3.11-slim AS python-app
+FROM python:3.12-slim AS python-app
 
 # Set working directory
 WORKDIR /app
