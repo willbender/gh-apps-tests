@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simple-weather-app"
-version = "1.12.0"
+version = "1.13.0"
 description = "A Python webservice that provides weather information for cities using the Open-Meteo API"
 readme = "README.md"
 license = {file = "LICENSE"}
