@@ -277,15 +277,17 @@ This project uses GitHub Actions for continuous integration and deployment with 
    - Uploads coverage reports to Codecov
 
 2. **Build and Security Scan Stage**
-   - Builds Docker image using the project's Dockerfile
-   - Performs security vulnerability scanning using Trivy
+   - Builds Docker image using the project's secure Dockerfile
+   - Performs comprehensive security vulnerability scanning using Trivy
+   - **Security Fail Conditions**: Fails the build if CRITICAL or HIGH vulnerabilities are found
    - Generates both SARIF and JSON vulnerability reports
-   - Uploads security scan results to GitHub Security tab
-   - Stores vulnerability reports as workflow artifacts
+   - Uploads security scan results to GitHub Security tab for monitoring
+   - Stores vulnerability reports as workflow artifacts for analysis
 
 3. **Deploy Stage** (main branch only)
    - Automatically increments the minor version in `pyproject.toml`
    - Tags and pushes the Docker image to GitHub Container Registry (ghcr.io)
+   - **Release Security Scanning**: Performs additional vulnerability scans on release images
    - Creates a new Git tag with the updated version
    - Generates a GitHub release with changelog and Docker pull commands
    - Pushes version changes back to the repository
@@ -304,11 +306,25 @@ docker pull ghcr.io/willbender/simple-weather-app:1.1.0
 
 ### Security Scanning
 
-Every build includes comprehensive security scanning:
+Every build includes comprehensive security scanning with strict fail conditions:
 
 - **Container Image Scanning**: Trivy scans the Docker image for known vulnerabilities
+- **Automated Security Failures**: Builds fail automatically if CRITICAL or HIGH vulnerabilities are detected
 - **Dependency Scanning**: Python dependencies are analyzed for security issues
 - **SARIF Integration**: Results are uploaded to GitHub's Security tab for easy monitoring
+- **Multi-Format Reports**: Both SARIF (for GitHub integration) and JSON (for detailed analysis) formats
+- **Release Security**: Additional security scans performed on every release to prevent vulnerable deployments
+
+### Docker Security Hardening
+
+The project uses a security-hardened multi-stage Docker build:
+
+- **Updated Base Images**: Uses Python 3.12-slim (latest LTS) for security patches
+- **Minimal Attack Surface**: Removes unnecessary packages after installation
+- **Alpine Consistency**: Properly configured Alpine Linux usage in build stages  
+- **Nginx Security**: Updated to nginx:1.26-alpine for latest security updates
+- **Non-root User**: Runs application processes as non-privileged user
+- **Clean Build Layers**: Comprehensive cleanup of caches and temporary files
 
 ### Version Management
 
