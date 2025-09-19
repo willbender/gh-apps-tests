@@ -1,15 +1,13 @@
 # Multi-stage build for Weather Service with nginx
 
 # Stage 1: Build the Python application
-FROM python:3.9-alpine AS python-app
+FROM python:3.12-alpine AS python-app
 
 # Set working directory
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache gcc musl-dev
 
 # Copy requirements first for better Docker layer caching
 COPY requirements.txt .
@@ -22,7 +20,7 @@ COPY src/main.py .
 COPY src/run_server.py .
 
 # Create non-root user for security
-RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
+RUN adduser -D -s /bin/sh app && chown -R app:app /app
 USER app
 
 # Expose port 8000 for the FastAPI application
@@ -44,14 +42,25 @@ COPY docker/nginx.conf /etc/nginx/conf.d/
 EXPOSE 80
 
 # Stage 3: Final multi-service container
-FROM python:3.10-slim
+FROM python:3.12-slim
+
+# Add security and maintenance labels
+LABEL maintainer="Weather Service Team <team@weatherservice.com>"
+LABEL org.opencontainers.image.title="Simple Weather App"
+LABEL org.opencontainers.image.description="A Python web service for weather information"
+LABEL org.opencontainers.image.version="1.25.0"
+LABEL org.opencontainers.image.source="https://github.com/willbender/simple-weather-app"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL security.scan="trivy"
 
 # Install nginx and supervisor to manage multiple processes
 RUN apt-get update && apt-get install -y \
     gcc \
     nginx \
     supervisor \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # Set working directory
 WORKDIR /app
