@@ -1,7 +1,7 @@
 # Multi-stage build for Weather Service with nginx
 
 # Stage 1: Build the Python application
-FROM python:3.11-alpine AS python-app
+FROM python:3.10-alpine AS python-app
 
 # Set working directory
 WORKDIR /app
@@ -44,7 +44,7 @@ COPY docker/nginx.conf /etc/nginx/conf.d/
 EXPOSE 80
 
 # Stage 3: Final multi-service container
-FROM python:3.12-slim
+FROM python:3.10-slim
 
 # Install nginx and supervisor to manage multiple processes
 RUN apt-get update && apt-get install -y \
